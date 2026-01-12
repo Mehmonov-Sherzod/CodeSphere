@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CodeSphere.DataAccess
+namespace CodeSphere.DataAccess.Persistence
 {
-    public class Class1
+    public class AppDbContext 
     {
+
     }
 }
