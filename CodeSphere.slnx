@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CodeSphere.Application/CodeSphere.Application.csproj" />
+    <Project Path="src/CodeSphere.DataAccess/CodeSphere.DataAccess.csproj" />
+    <Project Path="src/CodeSphere.Domain/CodeSphere.Domain.csproj" />
+    <Project Path="src/CodeSphere/CodeSphere.csproj" />
+  </Folder>
+</Solution>
