@@ -27,6 +27,8 @@ namespace CodeSphere.Application
         {
             services.AddScoped<IFileStoreageService, MinioFileStorageService>();
             services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<ITopicService, TopicService>();
+            services.AddScoped<IVideoService, VideoService>();
 
             services.AddSingleton<IMinioClient>(sp =>
             {
