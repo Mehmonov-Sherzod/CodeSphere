@@ -1,7 +1,0 @@
-﻿namespace CodeSphere.Domain
-{
-    public class Class1
-    {
-
-    }
-}
