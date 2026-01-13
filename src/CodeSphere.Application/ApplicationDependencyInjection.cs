@@ -26,6 +26,7 @@ namespace CodeSphere.Application
         private static void AddServices(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped<IFileStoreageService, MinioFileStorageService>();
+            services.AddScoped<ICourseService, CourseService>();
 
             services.AddSingleton<IMinioClient>(sp =>
             {

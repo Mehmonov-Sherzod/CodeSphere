@@ -1,3 +1,4 @@
+using CodeSphere.Application;
 using CodeSphere.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,7 @@ builder.Services.AddSwaggerGen();
 
 
 builder.Services.AddDataAccess(builder.Configuration);
+builder.Services.AddApplication(builder.Configuration);
 
 var app = builder.Build();
 
