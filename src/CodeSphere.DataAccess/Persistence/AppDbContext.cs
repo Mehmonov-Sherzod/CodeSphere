@@ -12,17 +12,16 @@ namespace CodeSphere.DataAccess.Persistence
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-
         public DbSet<User> Users { get; set; }
-
         public DbSet<Role> Roles { get; set; }
-
         public DbSet<UserRole> UserRoles { get; set; }
-
         public DbSet<Course> Courses { get; set; }  
-
         public DbSet<Topic> Topic { get; set; }
+        public DbSet<DsaQuestions> DsaQuestions { get; set; }   
 
+        public DbSet<DsaQuestionTestCases> DsaQuestionTestCases { get; set; }   
+
+        public DbSet<DsaTopicQuestions> DsaTopicQuestions { get; set; } 
         public DbSet<Videos> Videos { get; set; }
 
 
