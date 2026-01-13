@@ -10,4 +10,12 @@
     <ProjectReference Include="..\CodeSphere.DataAccess\CodeSphere.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Minio" Version="7.0.0" />
+  </ItemGroup>
+
 </Project>

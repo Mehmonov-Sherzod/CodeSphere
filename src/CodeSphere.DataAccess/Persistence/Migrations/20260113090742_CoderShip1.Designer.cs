@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CodeSphere.DataAccess.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260113075538_CoderShip")]
-    partial class CoderShip
+    [Migration("20260113090742_CoderShip1")]
+    partial class CoderShip1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
