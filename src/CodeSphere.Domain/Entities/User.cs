@@ -11,6 +11,7 @@ namespace CodeSphere.Domain.Entities
         public Guid Id { get; set; }
         public string FullName { get; set; }
         public string PhoneNumber { get; set; }
+        public string TelegramId { get; set; }
         public List<UserRole> UserRoles { get; set; }
 
     }

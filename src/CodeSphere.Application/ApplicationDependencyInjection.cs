@@ -29,7 +29,7 @@ namespace CodeSphere.Application
             services.AddScoped<ICourseService, CourseService>();
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IVideoService, VideoService>();
-
+            services.AddScoped<IUserService, UserService>();
             services.AddSingleton<IMinioClient>(sp =>
             {
                 var minioSettings = sp.GetRequiredService<IOptions<MinioSettings>>().Value;
