@@ -133,6 +133,102 @@ namespace CodeSphere.Application.Service.Impl
                 return ApiResult<LoginResponse>.Failure(new List<string> { "Invalid Telegram authentication data." });
             }
         }
+        public async Task<ApiResult<PaginationResult<GetUser>>> GetAllUserPage(PageOption pageOption)
+        {
+            var query = _appDbContext.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(pageOption.Search))
+            {
+                query = query.Where(u => u.FullName.Contains(pageOption.Search) ||
+                                         u.TelegramId.Contains(pageOption.Search) ||
+                                         u.PhoneNumber.Contains(pageOption.Search));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var users = await query
+                .Skip((pageOption.PageNumber - 1) * pageOption.PageSize)
+                .Take(pageOption.PageSize)
+                .Select(u => new GetUser
+                {
+                    Id = u.Id,
+                    FullName = u.FullName,
+                    PhoneNumber = u.PhoneNumber,
+                    TelegramId = u.TelegramId
+                })
+                .ToListAsync();
+
+            var result = new PaginationResult<GetUser>
+            {
+                Values = users,
+                PageNumber = pageOption.PageNumber,
+                PageSize = pageOption.PageSize,
+                TotalCount = totalCount
+            };
+
+            return ApiResult<PaginationResult<GetUser>>.Success(result);
+        }
+
+        public async Task<ApiResult<GetUser>> GetUserById(Guid id)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+            {
+                return ApiResult<GetUser>.Failure(new List<string> { "User not found" });
+            }
+
+            var getUser = new GetUser
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                TelegramId = user.TelegramId
+            };
+
+            return ApiResult<GetUser>.Success(getUser);
+        }
+
+        public async Task<ApiResult<GetUser>> UpdateUser(UpdateUser updateUser, Guid id)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+            {
+                return ApiResult<GetUser>.Failure(new List<string> { "User not found" });
+            }
+
+            user.FullName = updateUser.FullName;
+            user.PhoneNumber = updateUser.PhoneNumber;
+
+            await _appDbContext.SaveChangesAsync();
+
+            var getUser = new GetUser
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                TelegramId = user.TelegramId
+            };
+
+            return ApiResult<GetUser>.Success(getUser);
+        }
+
+        public async Task<ApiResult<bool>> DeleteUser(Guid id)
+        {
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+            {
+                return ApiResult<bool>.Failure(new List<string> { "User not found" });
+            }
+
+            _appDbContext.Users.Remove(user);
+            await _appDbContext.SaveChangesAsync();
+
+            return ApiResult<bool>.Success(true);
+        }
+
         private static bool VerifyHash(TelegramAuth auth, string botToken)
         {
             var dataCheckString = new StringBuilder();

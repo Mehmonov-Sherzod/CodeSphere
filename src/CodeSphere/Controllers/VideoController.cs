@@ -1,6 +1,7 @@
 using CodeSphere.Application.Models;
 using CodeSphere.Application.Models.Video;
 using CodeSphere.Application.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CodeSphere.Controllers
@@ -17,6 +18,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPost("create-video")]
+        [Authorize(Roles = "Admin")]
         [RequestSizeLimit(524288000)] // 500MB
         [RequestFormLimits(MultipartBodyLengthLimit = 524288000)]
         public async Task<IActionResult> CreateVideo(CreateVideo createVideo)
@@ -31,6 +33,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPost("get-all-video-page")]
+        //[Authorize]
         public async Task<IActionResult> GetAllVideoPage(PageOption pageOption)
         {
             var result = await _videoService.GetAllVideoPage(pageOption);
@@ -43,6 +46,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         [RequestSizeLimit(524288000)] // 500MB
         [RequestFormLimits(MultipartBodyLengthLimit = 524288000)]
         public async Task<IActionResult> UpdateVideo(UpdateVideo updateVideo, Guid id)
@@ -57,6 +61,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVideo(Guid id)
         {
             var result = await _videoService.DeleteVideo(id);
