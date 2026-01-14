@@ -1,7 +1,23 @@
 using CodeSphere.Application;
 using CodeSphere.DataAccess;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Kestrel for large file uploads (500MB)
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 524288000; // 500MB
+});
+
+// Configure FormOptions for large file uploads
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 524288000; // 500MB
+    options.ValueLengthLimit = 524288000;
+    options.MultipartHeadersLengthLimit = 524288000;
+});
 
 // Add CORS
 builder.Services.AddCors(options =>

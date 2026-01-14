@@ -38,6 +38,25 @@ namespace CodeSphere.Application.Service.Impl
                     await _minioClient.MakeBucketAsync(
                         new MakeBucketArgs().WithBucket(bucketName)
                     ).ConfigureAwait(false);
+
+                    // Bucket'ni public qilish uchun policy o'rnatish
+                    string policy = $@"{{
+                        ""Version"": ""2012-10-17"",
+                        ""Statement"": [
+                            {{
+                                ""Effect"": ""Allow"",
+                                ""Principal"": {{""AWS"": [""*""]}},
+                                ""Action"": [""s3:GetObject""],
+                                ""Resource"": [""arn:aws:s3:::{bucketName}/*""]
+                            }}
+                        ]
+                    }}";
+
+                    await _minioClient.SetPolicyAsync(
+                        new SetPolicyArgs()
+                            .WithBucket(bucketName)
+                            .WithPolicy(policy)
+                    ).ConfigureAwait(false);
                 }
 
                 // Faylni Minio'ga yuklash

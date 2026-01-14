@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 
 namespace CodeSphere.Application.Service.Impl
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly AppDbContext _appDbContext;
         public UserService(AppDbContext appDbContext)

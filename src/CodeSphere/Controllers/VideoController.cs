@@ -17,6 +17,8 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPost("create-video")]
+        [RequestSizeLimit(524288000)] // 500MB
+        [RequestFormLimits(MultipartBodyLengthLimit = 524288000)]
         public async Task<IActionResult> CreateVideo(CreateVideo createVideo)
         {
             var result = await _videoService.CreateVideo(createVideo);
@@ -41,6 +43,8 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPut("{id}")]
+        [RequestSizeLimit(524288000)] // 500MB
+        [RequestFormLimits(MultipartBodyLengthLimit = 524288000)]
         public async Task<IActionResult> UpdateVideo(UpdateVideo updateVideo, Guid id)
         {
             var result = await _videoService.UpdateVideo(updateVideo, id);
