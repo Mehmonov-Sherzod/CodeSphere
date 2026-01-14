@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace CodeSphere.Application.Models.Course
 {
-    public class GetCourse
+    public class UpdateCourse
     {
-        public Guid Id { get; set; }    
         public string Name { get; set; }
         public string Author { get; set; }
-        public string Image { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

@@ -11,5 +11,10 @@ namespace CodeSphere.Application.Service
     public interface ICourseService
     {
         Task<ApiResult<string>> CreateCourse(CreateCourse createCourse);
+        Task<ApiResult<PaginationResult<GetCourse>>> GetAllCoursePage(PageOption pageOption);
+
+        Task<ApiResult<string>> UpdateCourse(UpdateCourse updateCourse, Guid Id);
+
+        Task<ApiResult<string>> DeleteCourse(Guid id);
     }
 }
