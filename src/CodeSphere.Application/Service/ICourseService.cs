@@ -15,6 +15,6 @@ namespace CodeSphere.Application.Service
 
         Task<ApiResult<string>> UpdateCourse(UpdateCourse updateCourse, Guid Id);
 
-        Task<ApiResult<string>> DeleteCourse(Guid id);  
+        Task<ApiResult<string>> DeleteCourse(Guid id);
     }
 }

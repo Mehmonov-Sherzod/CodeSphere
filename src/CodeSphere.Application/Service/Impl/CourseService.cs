@@ -82,7 +82,7 @@ namespace CodeSphere.Application.Service.Impl
                    Name = x.Name,
                    Author = x.Author,
                    Image = x.ImageUrl
-                   
+
                }).ToListAsync();
 
             int total = _appDbContext.Courses.Count();
