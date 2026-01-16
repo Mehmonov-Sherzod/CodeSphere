@@ -2,15 +2,15 @@ name: CI/CD Deploy Production Backend Server
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: codesphere-backend
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     name: Build and Deploy to Production Backend Server
 
     steps:
@@ -34,7 +34,7 @@ jobs:
               echo ">>> CREATING PROJECT DIRECTORY"
               mkdir -p "$PROJECT_DIR"
               cd "$PROJECT_DIR"
-              git clone -b main "$REPO_URL" .
+              git clone -b master "$REPO_URL" .
             else
               cd "$PROJECT_DIR"
             fi
@@ -43,8 +43,8 @@ jobs:
             git clean -fd
             git reset --hard HEAD
             git fetch origin
-            git checkout main
-            git pull origin main
+            git checkout master
+            git pull origin master
 
             echo ">>> STOPPING DOCKER CONTAINERS"
             docker compose down --remove-orphans || true
