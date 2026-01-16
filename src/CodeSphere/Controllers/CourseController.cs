@@ -18,7 +18,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPost("create-course")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateCourse(CreateCourse createCourse)
         {
             var result = await _courseService.CreateCourse(createCourse);
@@ -44,7 +44,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateCourse(UpdateCourse updateCourse, Guid Id)
         {
             var result = await _courseService.UpdateCourse(updateCourse, Id);
@@ -57,7 +57,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUpdate(Guid Id)
         {
             var result = await _courseService.DeleteCourse(Id);

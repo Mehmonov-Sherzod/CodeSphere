@@ -67,7 +67,7 @@ namespace CodeSphere.Controllers
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteFile([FromQuery] string bucketName, [FromQuery] string objectName)
         {

@@ -32,7 +32,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPost("get-all-user-page")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUserPage([FromBody] PageOption pageOption)
         {
             var result = await _userService.GetAllUserPage(pageOption);
@@ -44,7 +44,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var result = await _userService.GetUserById(id);
@@ -56,7 +56,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUser updateUser, Guid id)
         {
             var result = await _userService.UpdateUser(updateUser, id);
@@ -68,7 +68,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var result = await _userService.DeleteUser(id);

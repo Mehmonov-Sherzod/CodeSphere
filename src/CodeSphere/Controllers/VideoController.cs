@@ -18,7 +18,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPost("create-video")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [RequestSizeLimit(524288000)] // 500MB
         [RequestFormLimits(MultipartBodyLengthLimit = 524288000)]
         public async Task<IActionResult> CreateVideo(CreateVideo createVideo)
@@ -46,7 +46,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [RequestSizeLimit(524288000)] // 500MB
         [RequestFormLimits(MultipartBodyLengthLimit = 524288000)]
         public async Task<IActionResult> UpdateVideo(UpdateVideo updateVideo, Guid id)
@@ -61,7 +61,7 @@ namespace CodeSphere.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteVideo(Guid id)
         {
             var result = await _videoService.DeleteVideo(id);

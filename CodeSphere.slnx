@@ -1,7 +1,4 @@
 <Solution>
-  <Project Path="docker-compose.dcproj">
-    <Build />
-  </Project>
   <Folder Name="/src/">
     <Project Path="src/CodeSphere.Application/CodeSphere.Application.csproj" Id="71a080c8-71e2-4005-815f-309e1f22d9c0" />
     <Project Path="src/CodeSphere.DataAccess/CodeSphere.DataAccess.csproj" Id="29d8e19d-c8f5-43f0-af6b-af6dbfa4eb25" />
