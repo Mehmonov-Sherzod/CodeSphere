@@ -1,0 +1,127 @@
+services:
+  # Backend - API
+  codesphere-api:
+    build:
+      context: .
+      dockerfile: src/CodeSphere/Dockerfile
+    image: codesphere-api:prod
+    container_name: codesphere-api
+    environment:
+    # ASPNETCORE
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ASPNETCORE_ENVIRONMENT=${ASPNET_ENVIRONMENT}
+      # DATABASE
+      - ConnectionStrings__DefaultConnectionString=Server=${DB_SERVER};Port=${DB_PORT};Database=${DB};User Id=${DB_USER};Password=${DB_PASSWORD};
+      # JWT
+      - Jwt__SecretKey=${JWT_SECRET}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      # SERILOG
+      - Serilog__WriteTo__1__Name=${LOG_WRITE_TO}
+      - Serilog__WriteTo__1__Args__serverUrl=${SEQ_URL}:${SEQ_PORT}
+      # MINIO
+      - MinioSettings__Endpoint=${MINIO_SERVER}:${MINIO_PORT}
+      - MinioSettings__AccessKey=${MINIO_ACCESS_KEY}
+      - MinioSettings__SecretKey=${MINIO_SECRET_KEY}
+      - MinioSettings__UseSSL=false
+    ports:
+      - "${API_CONTAINER_PORT}:${API_CONTAINER_PORT}"
+    depends_on:
+      - codesphere-database
+      - codesphere-logs
+      - codesphere-filemanager
+    networks:
+      - codesphere-network
+    restart: unless-stopped
+
+  # Database - PostgreSQL
+  codesphere-database:
+    image: postgres:latest
+    container_name: codesphere-database
+    environment:
+      POSTGRES_DB: ${DB}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - codesphere-database:/var/lib/postgresql
+    networks:
+      - codesphere-network
+    restart: unless-stopped
+
+  # Log - SEQ
+  codesphere-logs:
+    image: datalust/seq:latest
+    container_name: codesphere-logs
+    environment:
+      ACCEPT_EULA: Y
+      SEQ_FIRSTRUN_ADMINUSERNAME: ${SEQ_FIRSTRUN_ADMINUSERNAME}
+      SEQ_FIRSTRUN_ADMINPASSWORD: ${SEQ_FIRSTRUN_ADMINPASSWORD}
+    ports:
+      - "${SEQ_PORT}:5341"
+      - "${SEQ_URL_PORT}:80"
+    volumes:
+      - codesphere-logs:/data
+    networks:
+      - codesphere-network
+    restart: unless-stopped
+
+  # Filemanager - MinIO
+  codesphere-filemanager:
+    image: minio/minio:latest
+    container_name: codesphere-filemanager
+    command: server --console-address ":9001" /data/
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+    ports:
+      - "${MINIO_URL_PORT}:9001"
+      - "${MINIO_PORT}:9000"
+    volumes:
+      - /var/www/codesphere/production/codesphere-filemanager:/data
+    networks:
+      - codesphere-network
+    restart: unless-stopped
+
+  # ProxyServer - Nginx
+  codesphere-nginx:
+    image: nginx:latest
+    container_name: codesphere-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # CONF
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/sites-enabled/codesphere.uz:/etc/nginx/sites-enabled/codesphere.uz:ro
+      - ./nginx/sites-enabled/api.codesphere.uz:/etc/nginx/sites-enabled/api.codesphere.uz:ro
+      # SSL
+      - ./nginx/ssl/letsencrypt/codesphere.uz:/etc/letsencrypt/live/codesphere.uz:ro
+      - ./nginx/ssl/letsencrypt/api.codesphere.uz:/etc/letsencrypt/live/api.codesphere.uz:ro
+      # SSL OPTIONS
+      - ./nginx/ssl/letsencrypt/options-ssl-nginx.conf:/etc/letsencrypt/options-ssl-nginx.conf:ro
+      - ./nginx/ssl/letsencrypt/ssl-dhparams.pem:/etc/letsencrypt/ssl-dhparams.pem:ro
+      # LOG
+      - /var/www/codesphere/production/codesphere-nginx-logs:/var/log/nginx
+      # PROJECT
+      - /var/www/codesphere:/var/www/codesphere:ro
+    depends_on:
+      - codesphere-api
+    networks:
+      - codesphere-network
+    restart: unless-stopped
+
+volumes:
+  codesphere-database:
+    name: codesphere-database
+  codesphere-logs:
+    name: codesphere-logs
+  codesphere-nginx-logs:
+    name: codesphere-nginx-logs
+  codesphere-filemanager:
+    name: codesphere-filemanager
+
+networks:
+  codesphere-network:
+    driver: bridge

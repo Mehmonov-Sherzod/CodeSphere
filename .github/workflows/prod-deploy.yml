@@ -1,0 +1,59 @@
+name: CI/CD Deploy Production Backend Server
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: codesphere-backend
+    if: github.ref == 'refs/heads/main'
+    name: Build and Deploy to Production Backend Server
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to CodeSphere Production Backend Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.MAIN_HOST }}
+          username: ${{ secrets.MAIN_USERNAME }}
+          password: ${{ secrets.MAIN_PASSWORD }}
+          port: ${{ secrets.MAIN_PORT }}
+          script: |
+            set -e
+
+            PROJECT_DIR="/var/www/codesphere/production/codesphere-backend"
+            REPO_URL="git@github.com:${{ github.repository }}.git"
+
+            echo ">>> CHECKING PROJECT DIRECTORY"
+            if [ ! -d "$PROJECT_DIR" ]; then
+              echo ">>> CREATING PROJECT DIRECTORY"
+              mkdir -p "$PROJECT_DIR"
+              cd "$PROJECT_DIR"
+              git clone -b main "$REPO_URL" .
+            else
+              cd "$PROJECT_DIR"
+            fi
+
+            echo ">>> CLEANING GIT"
+            git clean -fd
+            git reset --hard HEAD
+            git fetch origin
+            git checkout main
+            git pull origin main
+
+            echo ">>> STOPPING DOCKER CONTAINERS"
+            docker compose down --remove-orphans || true
+
+            echo ">>> BUILDING AND STARTING DOCKER"
+            docker compose build
+            docker compose up -d
+
+            echo ">>> CLEANING UNUSED IMAGES"
+            docker image prune -f
+
+            echo ">>> DEPLOYMENT COMPLETED SUCCESSFULLY!"
