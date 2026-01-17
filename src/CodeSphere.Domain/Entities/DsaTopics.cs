@@ -11,6 +11,7 @@ namespace CodeSphere.Domain.Entities
         public Guid Id { get; set; }
         public string TopicName { get; set; }
         public int TopicLevel { get; set; }
+        public List<DsaTopicQuestions> TopicQuestions { get; set; }
        
     }
 }

@@ -13,6 +13,8 @@ namespace CodeSphere.Domain.Entities
         public string QuestionDescription { get; set; }
         public string DifficultyLevel { get; set; }
         public string? SolutionUrl { get; set; }
-        
+        public List<DsaQuestionTestCases> TestCases { get; set; }
+        public List<DsaTopicQuestions> TopicQuestions { get; set; }
+
     }
 }

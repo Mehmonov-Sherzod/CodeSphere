@@ -14,5 +14,6 @@ namespace CodeSphere.Domain.Entities
         public bool IsHidden { get; set; }
         public Guid DsaQuestionId { get; set; }
         public DsaQuestions DsaQuestion { get; set; }
+        
     }
 }
