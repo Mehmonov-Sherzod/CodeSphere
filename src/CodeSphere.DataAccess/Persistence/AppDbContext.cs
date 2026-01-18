@@ -17,9 +17,9 @@ namespace CodeSphere.DataAccess.Persistence
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Course> Courses { get; set; }  
         public DbSet<Topic> Topic { get; set; }
-        public DbSet<DsaQuestions> DsaQuestions { get; set; }   
-
-        public DbSet<DsaQuestionTestCases> DsaQuestionTestCases { get; set; }   
+        public DbSet<DsaQuestions> DsaQuestions { get; set; }
+        public DbSet<DsaTopics> DsaTopics { get; set; }
+        public DbSet<DsaQuestionTestCases> DsaQuestionTestCases { get; set; }
 
         public DbSet<DsaTopicQuestions> DsaTopicQuestions { get; set; } 
         public DbSet<Videos> Videos { get; set; }

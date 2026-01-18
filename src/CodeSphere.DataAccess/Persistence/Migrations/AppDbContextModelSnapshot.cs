@@ -41,7 +41,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.DsaQuestionTestCases", b =>
@@ -68,7 +68,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasIndex("DsaQuestionId");
 
-                    b.ToTable("DsaQuestionTestCases");
+                    b.ToTable("DsaQuestionTestCases", (string)null);
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.DsaQuestions", b =>
@@ -94,7 +94,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DsaQuestions");
+                    b.ToTable("DsaQuestions", (string)null);
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.DsaTopicQuestions", b =>
@@ -115,7 +115,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasIndex("DsaTopicsId");
 
-                    b.ToTable("DsaTopicQuestions");
+                    b.ToTable("DsaTopicQuestions", (string)null);
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.DsaTopics", b =>
@@ -133,7 +133,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DsaTopics");
+                    b.ToTable("DsaTopics", (string)null);
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.Role", b =>
@@ -154,7 +154,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -188,7 +188,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Topic");
+                    b.ToTable("Topic", (string)null);
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.User", b =>
@@ -211,7 +211,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.UserRole", b =>
@@ -226,7 +226,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserRoles");
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.Videos", b =>
@@ -253,7 +253,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("Videos");
+                    b.ToTable("Videos", (string)null);
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.DsaQuestionTestCases", b =>

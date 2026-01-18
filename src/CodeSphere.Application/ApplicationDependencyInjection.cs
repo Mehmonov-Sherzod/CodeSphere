@@ -30,8 +30,8 @@ namespace CodeSphere.Application
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IVideoService, VideoService>();
             services.AddScoped<IUserService, UserService>();
-
-            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IDsaQuestionService, DsaQuestionService>();
+            services.AddScoped<IDsaTopicService, DsaTopicService>();
             services.AddSingleton<IMinioClient>(sp =>
             {
                 var minioSettings = sp.GetRequiredService<IOptions<MinioSettings>>().Value;
