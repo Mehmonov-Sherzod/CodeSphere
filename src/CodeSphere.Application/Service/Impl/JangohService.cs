@@ -15,7 +15,7 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace CodeSphere.Application.Service.Impl
 {
-    public class JangohService
+    public class JangohService : IJangohService
     {
         private readonly AppDbContext _context;
         public JangohService(AppDbContext context)
@@ -31,6 +31,7 @@ namespace CodeSphere.Application.Service.Impl
             }
             foreach(var test in result.TestCases)
             {
+
                 var output = Run(Compile(codes.Code), test.Input);
                 if (output != test.ExpectedOutput.Trim())
                 {

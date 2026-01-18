@@ -3,6 +3,7 @@ using System;
 using CodeSphere.DataAccess.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CodeSphere.DataAccess.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260118123849_AddDsaQuestionDefinition")]
+    partial class AddDsaQuestionDefinition
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -50,14 +53,10 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("ClassName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("DsaQuestionsId")
+                    b.Property<Guid>("DsaQuestionId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("MethodName")
+                    b.Property<string>("FunctionName")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -67,7 +66,7 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DsaQuestionsId")
+                    b.HasIndex("DsaQuestionId")
                         .IsUnique();
 
                     b.ToTable("DsaQuestionDefinitions");
@@ -82,11 +81,14 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
                     b.Property<Guid>("DsaQuestionDefinitionId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("ParameterName")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Type")
+                    b.Property<int>("ParameterOrder")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ParameterType")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -311,13 +313,13 @@ namespace CodeSphere.DataAccess.Persistence.Migrations
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.DsaQuestionDefinition", b =>
                 {
-                    b.HasOne("CodeSphere.Domain.Entities.DsaQuestions", "DsaQuestions")
+                    b.HasOne("CodeSphere.Domain.Entities.DsaQuestions", "DsaQuestion")
                         .WithOne("Definition")
-                        .HasForeignKey("CodeSphere.Domain.Entities.DsaQuestionDefinition", "DsaQuestionsId")
+                        .HasForeignKey("CodeSphere.Domain.Entities.DsaQuestionDefinition", "DsaQuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("DsaQuestions");
+                    b.Navigation("DsaQuestion");
                 });
 
             modelBuilder.Entity("CodeSphere.Domain.Entities.DsaQuestionDefinitionParameteres", b =>

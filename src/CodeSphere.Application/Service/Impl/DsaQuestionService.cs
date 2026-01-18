@@ -32,6 +32,7 @@ namespace CodeSphere.Application.Service.Impl
                 TopicQuestions = new List<DsaTopicQuestions>()
             };
 
+            // Add test cases
             if (createDsaQuestion.TestCases != null && createDsaQuestion.TestCases.Any())
             {
                 foreach (var testCase in createDsaQuestion.TestCases)
@@ -47,6 +48,7 @@ namespace CodeSphere.Application.Service.Impl
                 }
             }
 
+            // Add topic associations
             if (createDsaQuestion.TopicIds != null && createDsaQuestion.TopicIds.Any())
             {
                 foreach (var topicId in createDsaQuestion.TopicIds)
@@ -64,6 +66,37 @@ namespace CodeSphere.Application.Service.Impl
                 }
             }
 
+            // Add definition with parameters
+            if (createDsaQuestion.Definition != null)
+            {
+                var definition = new DsaQuestionDefinition
+                {
+                    Id = Guid.NewGuid(),
+                    ClassName = createDsaQuestion.Definition.ClassName, 
+                    MethodName = createDsaQuestion.Definition.MethodName,
+                    ReturnType = createDsaQuestion.Definition.ReturnType,
+                    DsaQuestionsId = dsaQuestion.Id,
+                    Parameters = new List<DsaQuestionDefinitionParameteres>()
+                };
+
+                if (createDsaQuestion.Definition.Parameters != null && createDsaQuestion.Definition.Parameters.Any())
+                {
+                    foreach (var param in createDsaQuestion.Definition.Parameters)
+                    {
+                        definition.Parameters.Add(new DsaQuestionDefinitionParameteres
+                        {
+                            Id = Guid.NewGuid(),
+                            Name = param.Name,
+                            Type = param.Type,
+                            
+                            DsaQuestionDefinitionId = definition.Id
+                        });
+                    }
+                }
+
+                dsaQuestion.Definition = definition;
+            }
+
             await _appDbContext.DsaQuestions.AddAsync(dsaQuestion);
             await _appDbContext.SaveChangesAsync();
 
@@ -76,6 +109,8 @@ namespace CodeSphere.Application.Service.Impl
                 .Include(q => q.TestCases)
                 .Include(q => q.TopicQuestions)
                     .ThenInclude(tq => tq.DsaTopics)
+                .Include(q => q.Definition)
+                    .ThenInclude(d => d.Parameters)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(pageOption.Search))
@@ -107,7 +142,21 @@ namespace CodeSphere.Application.Service.Impl
                     {
                         Id = tq.DsaTopics.Id,
                         TopicName = tq.DsaTopics.TopicName
-                    }).ToList()
+                    }).ToList(),
+                    Definition = q.Definition != null ? new GetDefinition
+                    {
+                        Id = q.Definition.Id,
+                        ClassName = q.Definition.ClassName,
+                        MethodName = q.Definition.MethodName,
+                        ReturnType = q.Definition.ReturnType,
+                        Parameters = q.Definition.Parameters.Select(p => new GetDefinitionParameter
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Type = p.Type,
+                        
+                        }).ToList()
+                    } : null
                 }).ToListAsync();
 
             var pagination = new PaginationResult<GetDsaQuestion>
@@ -127,6 +176,8 @@ namespace CodeSphere.Application.Service.Impl
                 .Include(q => q.TestCases)
                 .Include(q => q.TopicQuestions)
                     .ThenInclude(tq => tq.DsaTopics)
+                .Include(q => q.Definition)
+                    .ThenInclude(d => d.Parameters)
                 .FirstOrDefaultAsync(q => q.Id == id);
 
             if (question == null)
@@ -150,7 +201,20 @@ namespace CodeSphere.Application.Service.Impl
                 {
                     Id = tq.DsaTopics.Id,
                     TopicName = tq.DsaTopics.TopicName
-                }).ToList() ?? new List<GetDsaTopicInfo>()
+                }).ToList() ?? new List<GetDsaTopicInfo>(),
+                Definition = question.Definition != null ? new GetDefinition
+                {
+                    Id = question.Definition.Id,
+                    ClassName = question.Definition.ClassName,
+                    MethodName = question.Definition.MethodName,
+                    ReturnType = question.Definition.ReturnType,
+                    Parameters = question.Definition.Parameters?.Select(p => new GetDefinitionParameter
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        Type = p.Type,
+                    }).ToList() ?? new List<GetDefinitionParameter>()
+                } : null
             };
 
             return ApiResult<GetDsaQuestion>.Success(result);
@@ -161,6 +225,8 @@ namespace CodeSphere.Application.Service.Impl
             var question = await _appDbContext.DsaQuestions
                 .Include(q => q.TestCases)
                 .Include(q => q.TopicQuestions)
+                .Include(q => q.Definition)
+                    .ThenInclude(d => d.Parameters)
                 .FirstOrDefaultAsync(q => q.Id == id);
 
             if (question == null)
@@ -174,10 +240,8 @@ namespace CodeSphere.Application.Service.Impl
             // Update test cases
             if (updateDsaQuestion.TestCases != null)
             {
-                // Remove existing test cases
                 _appDbContext.DsaQuestionTestCases.RemoveRange(question.TestCases);
 
-                // Add new test cases
                 foreach (var testCase in updateDsaQuestion.TestCases)
                 {
                     _appDbContext.DsaQuestionTestCases.Add(new DsaQuestionTestCases
@@ -194,10 +258,8 @@ namespace CodeSphere.Application.Service.Impl
             // Update topic associations
             if (updateDsaQuestion.TopicIds != null)
             {
-                // Remove existing associations
                 _appDbContext.DsaTopicQuestions.RemoveRange(question.TopicQuestions);
 
-                // Add new associations
                 foreach (var topicId in updateDsaQuestion.TopicIds)
                 {
                     var topicExists = await _appDbContext.DsaTopics.AnyAsync(t => t.Id == topicId);
@@ -213,6 +275,47 @@ namespace CodeSphere.Application.Service.Impl
                 }
             }
 
+            // Update definition
+            if (updateDsaQuestion.Definition != null)
+            {
+                // Remove existing definition and parameters
+                if (question.Definition != null)
+                {
+                    if (question.Definition.Parameters != null)
+                    {
+                        _appDbContext.DsaQuestionDefinitionParameteres.RemoveRange(question.Definition.Parameters);
+                    }
+                    _appDbContext.DsaQuestionDefinitions.Remove(question.Definition);
+                }
+
+                // Add new definition
+                var definition = new DsaQuestionDefinition
+                {
+                    Id = updateDsaQuestion.Definition.Id ?? Guid.NewGuid(),
+                    MethodName = updateDsaQuestion.Definition.MethodName,
+                    ClassName = updateDsaQuestion.Definition.ClassName,
+                    ReturnType = updateDsaQuestion.Definition.ReturnType,
+                    DsaQuestionsId = id,
+                    Parameters = new List<DsaQuestionDefinitionParameteres>()
+                };
+
+                if (updateDsaQuestion.Definition.Parameters != null && updateDsaQuestion.Definition.Parameters.Any())
+                {
+                    foreach (var param in updateDsaQuestion.Definition.Parameters)
+                    {
+                        definition.Parameters.Add(new DsaQuestionDefinitionParameteres
+                        {
+                            Id = param.Id ?? Guid.NewGuid(),
+                            Name = param.Name,
+                            Type = param.Type,
+                            DsaQuestionDefinitionId = definition.Id
+                        });
+                    }
+                }
+
+                _appDbContext.DsaQuestionDefinitions.Add(definition);
+            }
+
             _appDbContext.DsaQuestions.Update(question);
             await _appDbContext.SaveChangesAsync();
 
@@ -224,10 +327,22 @@ namespace CodeSphere.Application.Service.Impl
             var question = await _appDbContext.DsaQuestions
                 .Include(q => q.TestCases)
                 .Include(q => q.TopicQuestions)
+                .Include(q => q.Definition)
+                    .ThenInclude(d => d.Parameters)
                 .FirstOrDefaultAsync(q => q.Id == id);
 
             if (question == null)
                 return ApiResult<string>.Failure(new List<string> { "DSA Question not found" });
+
+            // Remove definition and parameters
+            if (question.Definition != null)
+            {
+                if (question.Definition.Parameters != null)
+                {
+                    _appDbContext.DsaQuestionDefinitionParameteres.RemoveRange(question.Definition.Parameters);
+                }
+                _appDbContext.DsaQuestionDefinitions.Remove(question.Definition);
+            }
 
             _appDbContext.DsaQuestionTestCases.RemoveRange(question.TestCases);
             _appDbContext.DsaTopicQuestions.RemoveRange(question.TopicQuestions);
@@ -247,6 +362,8 @@ namespace CodeSphere.Application.Service.Impl
                 .Include(q => q.TestCases)
                 .Include(q => q.TopicQuestions)
                     .ThenInclude(tq => tq.DsaTopics)
+                .Include(q => q.Definition)
+                    .ThenInclude(d => d.Parameters)
                 .Where(q => q.TopicQuestions.Any(tq => tq.DsaTopicsId == topicId))
                 .AsQueryable();
 
@@ -278,7 +395,20 @@ namespace CodeSphere.Application.Service.Impl
                     {
                         Id = tq.DsaTopics.Id,
                         TopicName = tq.DsaTopics.TopicName
-                    }).ToList()
+                    }).ToList(),
+                    Definition = q.Definition != null ? new GetDefinition
+                    {
+                        Id = q.Definition.Id,
+                        MethodName = q.Definition.MethodName,
+                        ClassName = q.Definition.ClassName,
+                        ReturnType = q.Definition.ReturnType,
+                        Parameters = q.Definition.Parameters.Select(p => new GetDefinitionParameter
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Type = p.Type,
+                        }).ToList()
+                    } : null
                 }).ToListAsync();
 
             var pagination = new PaginationResult<GetDsaQuestion>

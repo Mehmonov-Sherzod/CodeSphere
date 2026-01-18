@@ -30,6 +30,7 @@ namespace CodeSphere.Application
             services.AddScoped<ITopicService, TopicService>();
             services.AddScoped<IVideoService, VideoService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IJangohService, JangohService>();
             services.AddScoped<IDsaQuestionService, DsaQuestionService>();
             services.AddScoped<IDsaTopicService, DsaTopicService>();
             services.AddScoped<IDsaQuestionTestCaseService, DsaQuestionTestCaseService>();

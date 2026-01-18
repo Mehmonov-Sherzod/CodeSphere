@@ -20,6 +20,8 @@ namespace CodeSphere.DataAccess.Persistence
         public DbSet<DsaQuestions> DsaQuestions { get; set; }
         public DbSet<DsaTopics> DsaTopics { get; set; }
         public DbSet<DsaQuestionTestCases> DsaQuestionTestCases { get; set; }
+        public DbSet<DsaQuestionDefinition> DsaQuestionDefinitions { get; set; }
+        public DbSet<DsaQuestionDefinitionParameteres> DsaQuestionDefinitionParameteres { get; set; }
 
         public DbSet<DsaTopicQuestions> DsaTopicQuestions { get; set; } 
         public DbSet<Videos> Videos { get; set; }

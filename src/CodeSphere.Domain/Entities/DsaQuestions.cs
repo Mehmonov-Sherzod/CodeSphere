@@ -15,6 +15,7 @@ namespace CodeSphere.Domain.Entities
         public string? SolutionUrl { get; set; }
         public List<DsaQuestionTestCases> TestCases { get; set; }
         public List<DsaTopicQuestions> TopicQuestions { get; set; }
+        public DsaQuestionDefinition? Definition { get; set; }
 
     }
 }
