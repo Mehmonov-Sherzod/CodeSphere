@@ -34,6 +34,7 @@ namespace CodeSphere.Application
             services.AddScoped<IDsaQuestionService, DsaQuestionService>();
             services.AddScoped<IDsaTopicService, DsaTopicService>();
             services.AddScoped<IDsaQuestionTestCaseService, DsaQuestionTestCaseService>();
+            services.AddScoped<IDsaQuestionDefinitionService, DsaQuestionDefinitionService>();
             services.AddSingleton<IMinioClient>(sp =>
             {
                 var minioSettings = sp.GetRequiredService<IOptions<MinioSettings>>().Value;
