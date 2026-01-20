@@ -37,8 +37,8 @@ namespace CodeSphere.Application.Service.Impl
             {
                 return ApiResult<Verdrict>.Failure(new List<string> { "Failed" });
             }
-            var fullCode = BuildWrapper(result.Definition.ClassName, MethodSignature(result.Definition), codes.Code);
-            var compileResult = Compile(fullCode);
+          //  var fullCode = BuildWrapper(result.Definition.ClassName, MethodSignature(result.Definition), codes.Code);
+            var compileResult = Compile(codes.Code);
             var method = compileResult.GetTypes().First().GetMethod(result.Definition.MethodName);
             var parameters = method.GetParameters();
             object[] args = new object[parameters.Length];
@@ -110,25 +110,25 @@ namespace CodeSphere.Application.Service.Impl
             var instance  = Activator.CreateInstance(type);
             return method.Invoke(instance, inputs);
         }
-        private static string BuildWrapper(string className, string methodWithSignature, string userCode)
-        {
-                            return $@"
-                            using System;
-                            using System.Collections.Generic;
+        //private static string BuildWrapper(string className, string methodWithSignature, string userCode)
+        //{
+        //                    return $@"
+        //                    using System;
+        //                    using System.Collections.Generic;
 
-                            public class {className}
-                            {{
-                                {methodWithSignature}
-                                {{
-                                    {userCode}
-                                }}
-                            }}
-                            ";
-        }
-        private static string MethodSignature(DsaQuestionDefinition definition)
-        {
-            var parameters = string.Join(",", definition.Parameters.Select(p => $"{p.Type} {p.Name}"));
-            return $"public {definition.ReturnType} {definition.MethodName}({parameters})";
-        }
+        //                    public class {className}
+        //                    {{
+        //                        {methodWithSignature}
+        //                        {{
+        //                            {userCode}
+        //                        }}
+        //                    }}
+        //                    ";
+        //}
+        //private static string MethodSignature(DsaQuestionDefinition definition)
+        //{
+        //    var parameters = string.Join(",", definition.Parameters.Select(p => $"{p.Type} {p.Name}"));
+        //    return $"public {definition.ReturnType} {definition.MethodName}({parameters})";
+        //}
     }
 }
