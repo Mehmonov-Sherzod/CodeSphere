@@ -15,5 +15,6 @@ namespace CodeSphere.Domain.Entities
         public List<DsaQuestionDefinitionParameteres> Parameters { get; set; }
         public Guid DsaQuestionsId  { get; set; }
         public DsaQuestions DsaQuestions { get; set; }
+
     }
 }
